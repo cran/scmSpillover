@@ -7,12 +7,12 @@
 \method{print}{scm_spillover}(x, ...)
 }
 \arguments{
-\item{x}{An object of class scm_spillover}
+\item{x}{An object of class \code{scm_spillover}.}
 
-\item{...}{Additional arguments (not used)}
+\item{...}{Further arguments passed to or from other methods (unused).}
 }
 \value{
-Invisibly returns the input object
+The input object \code{x}, invisibly.
 }
 \description{
 Print method for scm_spillover objects

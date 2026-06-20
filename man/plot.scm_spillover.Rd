@@ -7,14 +7,17 @@
 \method{plot}{scm_spillover}(x, type = "effects", ...)
 }
 \arguments{
-\item{x}{An object of class scm_spillover}
+\item{x}{An object of class \code{scm_spillover}.}
 
-\item{type}{Type of plot: "effects" or "all"}
+\item{type}{Character; \code{"effects"} (default) for the treatment-effect
+plot or \code{"all"} for the full set of diagnostic plots.}
 
-\item{...}{Additional arguments passed to plotting functions}
+\item{...}{Further arguments passed to \code{\link{plot_effects}} or
+\code{\link{plot_all}}.}
 }
 \value{
-A ggplot object (invisibly for type="all")
+A \pkg{ggplot2} object (invisibly), as returned by the underlying
+  plotting function.
 }
 \description{
 Plot method for scm_spillover objects

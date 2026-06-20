@@ -7,7 +7,7 @@
 save_all_plots(
   result,
   prefix = "scm",
-  path = NULL,
+  path = ".",
   width = 10,
   height = 6,
   dpi = 300,
@@ -19,7 +19,7 @@ save_all_plots(
 
 \item{prefix}{File name prefix (default "scm")}
 
-\item{path}{Directory to save plots (required, no default)}
+\item{path}{Directory to save plots (default current directory)}
 
 \item{width}{Plot width in inches (default 10)}
 
@@ -30,15 +30,8 @@ save_all_plots(
 \item{...}{Additional arguments passed to plotting functions}
 }
 \value{
-Character vector of saved file paths, returned invisibly.
+Character vector of saved file names (invisibly)
 }
 \description{
 Save all plots to files
-}
-\examples{
-\dontrun{
-  data <- generate_test_data()
-  result <- run_scm_spillover(data, treatment_start = 20)
-  save_all_plots(result, path = tempdir())
-}
 }

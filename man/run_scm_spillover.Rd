@@ -24,8 +24,16 @@ run_scm_spillover(
 \item{verbose}{Logical, print progress}
 }
 \value{
-List with all results
+An object of class \code{scm_spillover}: a list with the
+  spillover-adjusted and standard treatment effects, confidence bounds,
+  the synthetic-control series, and the inputs used.
 }
 \description{
 Run Complete SCM Analysis with Spillover Effects
+}
+\examples{
+set.seed(1)
+sim <- generate_test_data(n_units = 10, n_periods = 30, treatment_start = 20)
+res <- run_scm_spillover(sim, treatment_start = 20, verbose = FALSE)
+res$spillover_effects
 }

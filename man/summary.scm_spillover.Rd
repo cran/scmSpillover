@@ -7,12 +7,12 @@
 \method{summary}{scm_spillover}(object, ...)
 }
 \arguments{
-\item{object}{An object of class scm_spillover}
+\item{object}{An object of class \code{scm_spillover}.}
 
-\item{...}{Additional arguments (not used)}
+\item{...}{Further arguments passed to or from other methods (unused).}
 }
 \value{
-Invisibly returns a data frame with detailed results
+A data frame of per-period effects, invisibly.
 }
 \description{
 Summary method for scm_spillover objects

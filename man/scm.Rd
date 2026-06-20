@@ -9,11 +9,19 @@ scm(Y, lambda = 1e-06)
 \arguments{
 \item{Y}{N x T matrix where first row is treated unit}
 
-\item{lambda}{Regularization parameter for numerical stability}
+\item{lambda}{Ridge regularization parameter for numerical stability}
 }
 \value{
 List containing intercept (a) and weights (b)
 }
 \description{
 Computes synthetic control weights for a single treated unit
+}
+\examples{
+set.seed(1)
+controls <- matrix(rnorm(5 * 20, 100, 10), nrow = 5)
+treated  <- c(0.5, 0.3, 0.2, 0, 0) \%*\% controls + rnorm(20, 0, 0.5)
+Y <- rbind(treated, controls)
+fit <- scm(Y)
+fit$b   # weights; first entry (0) is the treated unit
 }

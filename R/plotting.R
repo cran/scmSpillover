@@ -7,14 +7,6 @@
 #' @param outcome_label Label for outcome variable (default "Outcome")
 #' @param treatment_label Label for treatment (default "Treatment")
 #' @param show_ci Logical, whether to show confidence bands (default TRUE)
-#' @return A list containing three ggplot objects (p1, p2, p3), returned
-#'   invisibly. Called primarily for side effects (displaying plots).
-#' @examples
-#' \dontrun{
-#'   data <- generate_test_data()
-#'   result <- run_scm_spillover(data, treatment_start = 20)
-#'   plots <- plot_all(result)
-#' }
 #' @export
 plot_all <- function(result,
                      start_year = NULL,
@@ -22,8 +14,6 @@ plot_all <- function(result,
                      outcome_label = "Outcome",
                      treatment_label = "Treatment",
                      show_ci = TRUE) {
-
-
 
   # Automatically generate the year or period
   n_post <- length(result$spillover_effects)
@@ -123,15 +113,15 @@ plot_all <- function(result,
 
   # Print plots
   print(p1)
-  message("Showing plot 1 of 3...")
+  cat("Showing plot 1 of 3...\n")
   invisible(readline("Press Enter for next plot..."))
 
   print(p2)
-  message("Showing plot 2 of 3...")
+  cat("Showing plot 2 of 3...\n")
   invisible(readline("Press Enter for next plot..."))
 
   print(p3)
-  message("Showing plot 3 of 3.")
+  cat("Showing plot 3 of 3.\n")
 
   # Return all chart objects
   invisible(list(p1 = p1, p2 = p2, p3 = p3))
@@ -145,13 +135,6 @@ plot_all <- function(result,
 #' @param outcome_label Label for outcome variable (default "Outcome")
 #' @param show_ci Logical, whether to show confidence bands (default TRUE)
 #' @param show_vanilla Logical, whether to show vanilla SCM comparison (default FALSE)
-#' @return A ggplot object that can be further customized or saved.
-#' @examples
-#' \donttest{
-#'   data <- generate_test_data()
-#'   result <- run_scm_spillover(data, treatment_start = 20, verbose = FALSE)
-#'   p <- plot_effects(result)
-#' }
 #' @export
 plot_effects <- function(result,
                          start_year = NULL,
@@ -159,8 +142,6 @@ plot_effects <- function(result,
                          outcome_label = "Outcome",
                          show_ci = TRUE,
                          show_vanilla = FALSE) {
-
-
 
   # Generate periods
   n_post <- length(result$spillover_effects)
@@ -224,6 +205,9 @@ plot_effects <- function(result,
   return(p)
 }
 
+# ========================================
+# Quick plotting functions
+# ========================================
 
 #' Quick plot for treatment effects with confidence intervals
 #'
@@ -259,8 +243,6 @@ qplot_compare <- function(result,
                           start_year = NULL,
                           unit_name = "Treated Unit",
                           outcome_label = "Outcome") {
-
-
 
   # Generate periods
   n_post <- length(result$spillover_effects)
@@ -310,8 +292,6 @@ qplot_series <- function(result,
                          unit_name = "Treated Unit",
                          outcome_label = "Outcome",
                          treatment_label = "Treatment") {
-
-
 
   # Calculate periods
   n_post <- length(result$spillover_effects)
@@ -420,14 +400,14 @@ qplot_all <- function(result,
                       pause = TRUE) {
 
   # Plot 1: Comparison
-  message("Plot 1 of 3: Method Comparison")
+  cat("Plot 1 of 3: Method Comparison\n")
   p1 <- qplot_compare(result, start_year, unit_name, outcome_label)
   if (pause) {
     invisible(readline("Press Enter for next plot..."))
   }
 
   # Plot 2: Effects with/without CI
-  message("Plot 2 of 3: Treatment Effects")
+  cat("Plot 2 of 3: Treatment Effects\n")
   if (show_ci) {
     p2 <- qplot_ci(result, start_year, unit_name, outcome_label)
   } else {
@@ -438,7 +418,7 @@ qplot_all <- function(result,
   }
 
   # Plot 3: Time series
-  message("Plot 3 of 3: Time Series")
+  cat("Plot 3 of 3: Time Series\n")
   p3 <- qplot_series(result, start_year, unit_name, outcome_label, treatment_label)
 
   invisible(list(comparison = p1, effects = p2, series = p3))
@@ -448,33 +428,20 @@ qplot_all <- function(result,
 #'
 #' @param result Output from run_scm_spillover
 #' @param prefix File name prefix (default "scm")
-#' @param path Directory to save plots (required, no default)
+#' @param path Directory to save plots (default current directory)
 #' @param width Plot width in inches (default 10)
 #' @param height Plot height in inches (default 6)
 #' @param dpi Resolution (default 300)
 #' @param ... Additional arguments passed to plotting functions
-#' @return Character vector of saved file paths, returned invisibly.
-#' @examples
-#' \dontrun{
-#'   data <- generate_test_data()
-#'   result <- run_scm_spillover(data, treatment_start = 20)
-#'   save_all_plots(result, path = tempdir())
-#' }
+#' @return Character vector of saved file names (invisibly)
 #' @export
 save_all_plots <- function(result,
                            prefix = "scm",
-                           path = NULL,
+                           path = ".",
                            width = 10,
                            height = 6,
                            dpi = 300,
                            ...) {
-
-
-
-  # Check that path is provided
-  if (is.null(path)) {
-    stop("'path' must be specified. Use tempdir() for temporary storage.")
-  }
 
   # Create directory if it doesn't exist
   if (!dir.exists(path)) {
@@ -505,8 +472,8 @@ save_all_plots <- function(result,
   ggsave(files[4], p4, width = width, height = height, dpi = dpi)
   ggsave(files[5], p5, width = width, height = height, dpi = dpi)
 
-  message("Saved plots to:")
-  message(paste("-", files, collapse = "\n"))
+  cat("Saved plots to:\n")
+  cat(paste("-", files), sep = "\n")
 
   invisible(files)
 }

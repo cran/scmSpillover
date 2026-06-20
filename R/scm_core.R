@@ -2,9 +2,16 @@
 #'
 #' @description Computes synthetic control weights for a single treated unit
 #' @param Y N x T matrix where first row is treated unit
-#' @param lambda Regularization parameter for numerical stability
+#' @param lambda Ridge regularization parameter for numerical stability
 #' @return List containing intercept (a) and weights (b)
-#' @import limSolve
+#' @importFrom quadprog solve.QP
+#' @examples
+#' set.seed(1)
+#' controls <- matrix(rnorm(5 * 20, 100, 10), nrow = 5)
+#' treated  <- c(0.5, 0.3, 0.2, 0, 0) %*% controls + rnorm(20, 0, 0.5)
+#' Y <- rbind(treated, controls)
+#' fit <- scm(Y)
+#' fit$b   # weights; first entry (0) is the treated unit
 #' @export
 scm <- function(Y, lambda = 1e-6) {
   # Y: N x T matrix, first row is treated unit
@@ -27,23 +34,30 @@ scm <- function(Y, lambda = 1e-6) {
   Y_demeaned <- Y_treated - Y_treated_mean
   X_demeaned <- t(Y_untreated) - rep(Y_untreated_mean, each = T)  # Demean correctly
 
-  # Setup the constrained least squares problem
+  # Constrained least squares for the synthetic-control weights:
+  #   minimize ||X_demeaned %*% w - Y_demeaned||^2
+  #   subject to sum(w) = 1 and w >= 0
   A <- X_demeaned
   b <- Y_demeaned
 
-  # Constraints: weights sum to 1 and are non-negative
-  E <- matrix(1, nrow = 1, ncol = N-1)  # Equality constraint: sum = 1
-  f <- 1
-  G <- diag(N-1)  # Inequality constraints: w >= 0
-  h <- rep(0, N-1)
+  # Reformulate as a quadratic program for quadprog::solve.QP, which minimizes
+  #   1/2 * w' Dmat w - dvec' w   subject to   t(Amat) w >= bvec
+  # (the first `meq` constraints are equalities). The lambda ridge term keeps
+  # Dmat positive definite when there are more control units than time periods.
+  Dmat <- crossprod(A) + diag(lambda, N - 1)  # t(A) %*% A + lambda * I
+  dvec <- as.vector(crossprod(A, b))          # t(A) %*% b
 
-  # Solve using limSolve
-  tryCatch({
-    sol <- lsei(A = A, B = b, E = E, F = f, G = G, H = h)
-    b_hat <- sol$X
+  # First constraint (meq = 1) is the equality sum(w) = 1; the rest enforce w >= 0.
+  Amat <- cbind(rep(1, N - 1), diag(N - 1))
+  bvec <- c(1, rep(0, N - 1))
+
+  b_hat <- tryCatch({
+    sol <- quadprog::solve.QP(Dmat = Dmat, dvec = dvec,
+                              Amat = Amat, bvec = bvec, meq = 1)
+    sol$solution
   }, error = function(e) {
     warning("SCM optimization failed, using equal weights")
-    b_hat <- rep(1/(N-1), N-1)
+    rep(1/(N-1), N-1)
   })
 
   # Calculate intercept

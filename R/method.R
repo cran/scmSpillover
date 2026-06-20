@@ -1,7 +1,8 @@
 #' Print method for scm_spillover objects
-#' @param x An object of class scm_spillover
-#' @param ... Additional arguments (not used)
-#' @return Invisibly returns the input object
+#'
+#' @param x An object of class \code{scm_spillover}.
+#' @param ... Further arguments passed to or from other methods (unused).
+#' @return The input object \code{x}, invisibly.
 #' @export
 print.scm_spillover <- function(x, ...) {
   cat("\nSCM with Spillover Effects Results\n")
@@ -15,14 +16,16 @@ print.scm_spillover <- function(x, ...) {
 }
 
 #' Summary method for scm_spillover objects
-#' @param object An object of class scm_spillover
-#' @param ... Additional arguments (not used)
-#' @return Invisibly returns a data frame with detailed results
+#'
+#' @param object An object of class \code{scm_spillover}.
+#' @param ... Further arguments passed to or from other methods (unused).
+#' @return A data frame of per-period effects, invisibly.
 #' @export
 summary.scm_spillover <- function(object, ...) {
   cat("\nDetailed SCM Analysis Summary\n")
   cat("==============================\n\n")
 
+  # Create a summary table
   results_df <- data.frame(
     Period = 1:length(object$spillover_effects),
     Spillover_Effect = round(object$spillover_effects, 3),
@@ -37,16 +40,20 @@ summary.scm_spillover <- function(object, ...) {
   cat("\n--- Statistical Summary ---\n")
   cat("Mean spillover effect:", round(mean(object$spillover_effects), 3), "\n")
   cat("Mean vanilla effect:", round(mean(object$vanilla_effects), 3), "\n")
-  cat("SD of spillover effects:", round(stats::sd(object$spillover_effects), 3), "\n")
+  cat("SD of spillover effects:", round(sd(object$spillover_effects), 3), "\n")
 
   invisible(results_df)
 }
 
 #' Plot method for scm_spillover objects
-#' @param x An object of class scm_spillover
-#' @param type Type of plot: "effects" or "all"
-#' @param ... Additional arguments passed to plotting functions
-#' @return A ggplot object (invisibly for type="all")
+#'
+#' @param x An object of class \code{scm_spillover}.
+#' @param type Character; \code{"effects"} (default) for the treatment-effect
+#'   plot or \code{"all"} for the full set of diagnostic plots.
+#' @param ... Further arguments passed to \code{\link{plot_effects}} or
+#'   \code{\link{plot_all}}.
+#' @return A \pkg{ggplot2} object (invisibly), as returned by the underlying
+#'   plotting function.
 #' @export
 plot.scm_spillover <- function(x, type = "effects", ...) {
   if (type == "effects") {

@@ -5,7 +5,14 @@
 #' @param treated_unit Integer, column index of treated unit (default = 1)
 #' @param affected_units Vector of column indices for all affected units (including treated)
 #' @param verbose Logical, print progress
-#' @return List with all results
+#' @return An object of class \code{scm_spillover}: a list with the
+#'   spillover-adjusted and standard treatment effects, confidence bounds,
+#'   the synthetic-control series, and the inputs used.
+#' @examples
+#' set.seed(1)
+#' sim <- generate_test_data(n_units = 10, n_periods = 30, treatment_start = 20)
+#' res <- run_scm_spillover(sim, treatment_start = 20, verbose = FALSE)
+#' res$spillover_effects
 #' @export
 run_scm_spillover <- function(data,
                               treatment_start,
